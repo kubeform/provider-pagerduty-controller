@@ -6,13 +6,12 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/go-logr/logr v0.4.0
 	github.com/gobuffalo/flect v0.2.3
-	github.com/hashicorp/go-cty v1.4.1-0.20200414143053-d3edf31b6320
-	github.com/hashicorp/terraform-plugin-go v0.3.0
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.7.0
+	github.com/hashicorp/terraform-plugin-sdk v1.7.0
 	github.com/imdario/mergo v0.3.12
 	github.com/json-iterator/go v1.1.11
-	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.1.3
+	github.com/terraform-providers/terraform-provider-pagerduty v0.0.0-00010101000000-000000000000
+	github.com/zclconf/go-cty v1.8.4
 	go.bytebuilders.dev/audit v0.0.7
 	go.bytebuilders.dev/license-verifier v0.9.2
 	go.bytebuilders.dev/license-verifier/kubernetes v0.9.2
@@ -25,10 +24,12 @@ require (
 	k8s.io/klog/v2 v2.8.0
 	kmodules.xyz/client-go v0.0.0-20210617233340-13d22e91512b
 	kubeform.dev/apimachinery v0.0.0-20210629153539-7bcd34a30eb5
-	kubeform.dev/provider-pagerduty-api v0.0.0-20210730063217-591009e2877c
+	kubeform.dev/provider-pagerduty-api v0.0.0-20210802091108-2a90511b471f
 	sigs.k8s.io/cli-utils v0.25.0
 	sigs.k8s.io/controller-runtime v0.9.0
 )
+
+replace github.com/hashicorp/terraform-plugin-sdk => github.com/kubeform/terraform-plugin-sdk v1.17.3-0.20210525113044-1cabe1160aa8
 
 replace github.com/terraform-providers/terraform-provider-pagerduty => github.com/PagerDuty/terraform-provider-pagerduty v1.10.0
 

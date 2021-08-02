@@ -393,7 +393,7 @@ func hasResourceChanged(combineRaw map[string]interface{}, copyrawStatus map[str
 	stateVal := HCL2ValueFromConfigValue(copyrawStatus)
 	proposedPlanVal := HCL2ValueFromConfigValue(combineRaw)
 
-	diff, err := tfschema.DiffFromValues(context.TODO(), stateVal, proposedPlanVal, stripResourceModifiers(res))
+	diff, err := tfschema.DiffFromValues(stateVal, proposedPlanVal, stripResourceModifiers(res))
 	if err != nil {
 		return false, err
 	}

@@ -6,10 +6,7 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/go-logr/logr v0.4.0
 	github.com/gobuffalo/flect v0.2.3
-	github.com/hashicorp/go-hclog v0.15.0 // indirect
-	github.com/hashicorp/go-plugin v1.4.1 // indirect
-	github.com/hashicorp/terraform-exec v0.14.0 // indirect
-	github.com/hashicorp/terraform-plugin-sdk v1.17.2
+	github.com/hashicorp/terraform-plugin-sdk v1.7.0
 	github.com/imdario/mergo v0.3.12
 	github.com/json-iterator/go v1.1.11
 	github.com/spf13/cobra v1.1.3
@@ -31,6 +28,8 @@ require (
 	sigs.k8s.io/cli-utils v0.25.0
 	sigs.k8s.io/controller-runtime v0.9.0
 )
+
+replace github.com/hashicorp/terraform-plugin-sdk => github.com/kubeform/terraform-plugin-sdk v1.17.3-0.20210525113044-1cabe1160aa8
 
 replace github.com/terraform-providers/terraform-provider-pagerduty => github.com/PagerDuty/terraform-provider-pagerduty v1.10.0
 

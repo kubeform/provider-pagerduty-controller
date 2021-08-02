@@ -27,8 +27,9 @@ import (
 	"sync"
 	"time"
 
-	pagerduty "github.com/pagerduty/terraform-provider-pagerduty/pagerduty"
 	"github.com/gobuffalo/flect"
+	tfschema "github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	pagerduty "github.com/terraform-providers/terraform-provider-pagerduty/pagerduty"
 	auditlib "go.bytebuilders.dev/audit/lib"
 	arv1 "k8s.io/api/admissionregistration/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
@@ -39,26 +40,30 @@ import (
 	admissionregistrationv1 "k8s.io/client-go/kubernetes/typed/admissionregistration/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/klog/v2"
-	dnsv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/dns/v1alpha1"
-	firewallv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/firewall/v1alpha1"
-	instancev1alpha1 "kubeform.dev/provider-pagerduty-api/apis/instance/v1alpha1"
-	kubernetesv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/kubernetes/v1alpha1"
-	loadbalancerv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/loadbalancer/v1alpha1"
-	networkv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/network/v1alpha1"
-	snapshotv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/snapshot/v1alpha1"
-	sshv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/ssh/v1alpha1"
-	templatev1alpha1 "kubeform.dev/provider-pagerduty-api/apis/template/v1alpha1"
-	volumev1alpha1 "kubeform.dev/provider-pagerduty-api/apis/volume/v1alpha1"
-	controllersdns "kubeform.dev/provider-pagerduty-controller/controllers/dns"
-	controllersfirewall "kubeform.dev/provider-pagerduty-controller/controllers/firewall"
-	controllersinstance "kubeform.dev/provider-pagerduty-controller/controllers/instance"
-	controllerskubernetes "kubeform.dev/provider-pagerduty-controller/controllers/kubernetes"
-	controllersloadbalancer "kubeform.dev/provider-pagerduty-controller/controllers/loadbalancer"
-	controllersnetwork "kubeform.dev/provider-pagerduty-controller/controllers/network"
-	controllerssnapshot "kubeform.dev/provider-pagerduty-controller/controllers/snapshot"
-	controllersssh "kubeform.dev/provider-pagerduty-controller/controllers/ssh"
-	controllerstemplate "kubeform.dev/provider-pagerduty-controller/controllers/template"
-	controllersvolume "kubeform.dev/provider-pagerduty-controller/controllers/volume"
+	addonv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/addon/v1alpha1"
+	businessv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/business/v1alpha1"
+	escalationv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/escalation/v1alpha1"
+	eventv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/event/v1alpha1"
+	extensionv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/extension/v1alpha1"
+	maintenancev1alpha1 "kubeform.dev/provider-pagerduty-api/apis/maintenance/v1alpha1"
+	responsev1alpha1 "kubeform.dev/provider-pagerduty-api/apis/response/v1alpha1"
+	rulesetv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/ruleset/v1alpha1"
+	schedulev1alpha1 "kubeform.dev/provider-pagerduty-api/apis/schedule/v1alpha1"
+	servicev1alpha1 "kubeform.dev/provider-pagerduty-api/apis/service/v1alpha1"
+	teamv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/team/v1alpha1"
+	userv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/user/v1alpha1"
+	controllersaddon "kubeform.dev/provider-pagerduty-controller/controllers/addon"
+	controllersbusiness "kubeform.dev/provider-pagerduty-controller/controllers/business"
+	controllersescalation "kubeform.dev/provider-pagerduty-controller/controllers/escalation"
+	controllersevent "kubeform.dev/provider-pagerduty-controller/controllers/event"
+	controllersextension "kubeform.dev/provider-pagerduty-controller/controllers/extension"
+	controllersmaintenance "kubeform.dev/provider-pagerduty-controller/controllers/maintenance"
+	controllersresponse "kubeform.dev/provider-pagerduty-controller/controllers/response"
+	controllersruleset "kubeform.dev/provider-pagerduty-controller/controllers/ruleset"
+	controllersschedule "kubeform.dev/provider-pagerduty-controller/controllers/schedule"
+	controllersservice "kubeform.dev/provider-pagerduty-controller/controllers/service"
+	controllersteam "kubeform.dev/provider-pagerduty-controller/controllers/team"
+	controllersuser "kubeform.dev/provider-pagerduty-controller/controllers/user"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
@@ -243,255 +248,363 @@ func updateVWC(vwcClient *admissionregistrationv1.AdmissionregistrationV1Client,
 func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVersionKind, auditor *auditlib.EventPublisher, watchOnlyDefault bool) error {
 	switch gvk {
 	case schema.GroupVersionKind{
-		Group:   "dns.pagerduty.kubeform.com",
+		Group:   "addon.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "DomainName",
+		Kind:    "Addon",
 	}:
-		if err := (&controllersdns.DomainNameReconciler{
+		if err := (&controllersaddon.AddonReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("DomainName"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Addon"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider(),
-			Resource:         pagerduty.Provider().ResourcesMap["pagerduty_dns_domain_name"],
-			TypeName:         "pagerduty_dns_domain_name",
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_addon"],
+			TypeName:         "pagerduty_addon",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "DomainName")
+			setupLog.Error(err, "unable to create controller", "controller", "Addon")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "dns.pagerduty.kubeform.com",
+		Group:   "business.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "DomainRecord",
+		Kind:    "Service",
 	}:
-		if err := (&controllersdns.DomainRecordReconciler{
+		if err := (&controllersbusiness.ServiceReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("DomainRecord"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Service"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider(),
-			Resource:         pagerduty.Provider().ResourcesMap["pagerduty_dns_domain_record"],
-			TypeName:         "pagerduty_dns_domain_record",
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_business_service"],
+			TypeName:         "pagerduty_business_service",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "DomainRecord")
+			setupLog.Error(err, "unable to create controller", "controller", "Service")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "firewall.pagerduty.kubeform.com",
+		Group:   "escalation.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Firewall",
+		Kind:    "Policy",
 	}:
-		if err := (&controllersfirewall.FirewallReconciler{
+		if err := (&controllersescalation.PolicyReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Firewall"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Policy"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider(),
-			Resource:         pagerduty.Provider().ResourcesMap["pagerduty_firewall"],
-			TypeName:         "pagerduty_firewall",
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_escalation_policy"],
+			TypeName:         "pagerduty_escalation_policy",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Firewall")
+			setupLog.Error(err, "unable to create controller", "controller", "Policy")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "firewall.pagerduty.kubeform.com",
+		Group:   "event.pagerduty.kubeform.com",
 		Version: "v1alpha1",
 		Kind:    "Rule",
 	}:
-		if err := (&controllersfirewall.RuleReconciler{
+		if err := (&controllersevent.RuleReconciler{
 			Client:           mgr.GetClient(),
 			Log:              ctrl.Log.WithName("controllers").WithName("Rule"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider(),
-			Resource:         pagerduty.Provider().ResourcesMap["pagerduty_firewall_rule"],
-			TypeName:         "pagerduty_firewall_rule",
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_event_rule"],
+			TypeName:         "pagerduty_event_rule",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Rule")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "instance.pagerduty.kubeform.com",
+		Group:   "extension.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Instance",
+		Kind:    "Extension",
 	}:
-		if err := (&controllersinstance.InstanceReconciler{
+		if err := (&controllersextension.ExtensionReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Instance"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Extension"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider(),
-			Resource:         pagerduty.Provider().ResourcesMap["pagerduty_instance"],
-			TypeName:         "pagerduty_instance",
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_extension"],
+			TypeName:         "pagerduty_extension",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Instance")
+			setupLog.Error(err, "unable to create controller", "controller", "Extension")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "kubernetes.pagerduty.kubeform.com",
+		Group:   "extension.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Cluster",
+		Kind:    "Servicenow",
 	}:
-		if err := (&controllerskubernetes.ClusterReconciler{
+		if err := (&controllersextension.ServicenowReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Cluster"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Servicenow"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider(),
-			Resource:         pagerduty.Provider().ResourcesMap["pagerduty_kubernetes_cluster"],
-			TypeName:         "pagerduty_kubernetes_cluster",
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_extension_servicenow"],
+			TypeName:         "pagerduty_extension_servicenow",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Cluster")
+			setupLog.Error(err, "unable to create controller", "controller", "Servicenow")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "kubernetes.pagerduty.kubeform.com",
+		Group:   "maintenance.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "NodePool",
+		Kind:    "Window",
 	}:
-		if err := (&controllerskubernetes.NodePoolReconciler{
+		if err := (&controllersmaintenance.WindowReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("NodePool"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Window"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider(),
-			Resource:         pagerduty.Provider().ResourcesMap["pagerduty_kubernetes_node_pool"],
-			TypeName:         "pagerduty_kubernetes_node_pool",
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_maintenance_window"],
+			TypeName:         "pagerduty_maintenance_window",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "NodePool")
+			setupLog.Error(err, "unable to create controller", "controller", "Window")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "loadbalancer.pagerduty.kubeform.com",
+		Group:   "response.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Loadbalancer",
+		Kind:    "Play",
 	}:
-		if err := (&controllersloadbalancer.LoadbalancerReconciler{
+		if err := (&controllersresponse.PlayReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Loadbalancer"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Play"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider(),
-			Resource:         pagerduty.Provider().ResourcesMap["pagerduty_loadbalancer"],
-			TypeName:         "pagerduty_loadbalancer",
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_response_play"],
+			TypeName:         "pagerduty_response_play",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Loadbalancer")
+			setupLog.Error(err, "unable to create controller", "controller", "Play")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "network.pagerduty.kubeform.com",
+		Group:   "ruleset.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Network",
+		Kind:    "Ruleset",
 	}:
-		if err := (&controllersnetwork.NetworkReconciler{
+		if err := (&controllersruleset.RulesetReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Network"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Ruleset"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider(),
-			Resource:         pagerduty.Provider().ResourcesMap["pagerduty_network"],
-			TypeName:         "pagerduty_network",
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_ruleset"],
+			TypeName:         "pagerduty_ruleset",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Network")
+			setupLog.Error(err, "unable to create controller", "controller", "Ruleset")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "snapshot.pagerduty.kubeform.com",
+		Group:   "ruleset.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Snapshot",
+		Kind:    "Rule",
 	}:
-		if err := (&controllerssnapshot.SnapshotReconciler{
+		if err := (&controllersruleset.RuleReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Snapshot"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Rule"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider(),
-			Resource:         pagerduty.Provider().ResourcesMap["pagerduty_snapshot"],
-			TypeName:         "pagerduty_snapshot",
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_ruleset_rule"],
+			TypeName:         "pagerduty_ruleset_rule",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Snapshot")
+			setupLog.Error(err, "unable to create controller", "controller", "Rule")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "ssh.pagerduty.kubeform.com",
+		Group:   "schedule.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Key",
+		Kind:    "Schedule",
 	}:
-		if err := (&controllersssh.KeyReconciler{
+		if err := (&controllersschedule.ScheduleReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Key"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Schedule"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider(),
-			Resource:         pagerduty.Provider().ResourcesMap["pagerduty_ssh_key"],
-			TypeName:         "pagerduty_ssh_key",
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_schedule"],
+			TypeName:         "pagerduty_schedule",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Key")
+			setupLog.Error(err, "unable to create controller", "controller", "Schedule")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "template.pagerduty.kubeform.com",
+		Group:   "service.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Template",
+		Kind:    "Service",
 	}:
-		if err := (&controllerstemplate.TemplateReconciler{
+		if err := (&controllersservice.ServiceReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Template"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Service"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider(),
-			Resource:         pagerduty.Provider().ResourcesMap["pagerduty_template"],
-			TypeName:         "pagerduty_template",
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_service"],
+			TypeName:         "pagerduty_service",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Template")
+			setupLog.Error(err, "unable to create controller", "controller", "Service")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "volume.pagerduty.kubeform.com",
+		Group:   "service.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Volume",
+		Kind:    "Dependency",
 	}:
-		if err := (&controllersvolume.VolumeReconciler{
+		if err := (&controllersservice.DependencyReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Volume"),
+			Log:              ctrl.Log.WithName("controllers").WithName("Dependency"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider(),
-			Resource:         pagerduty.Provider().ResourcesMap["pagerduty_volume"],
-			TypeName:         "pagerduty_volume",
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_service_dependency"],
+			TypeName:         "pagerduty_service_dependency",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Volume")
+			setupLog.Error(err, "unable to create controller", "controller", "Dependency")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "volume.pagerduty.kubeform.com",
+		Group:   "service.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Attachment",
+		Kind:    "EventRule",
 	}:
-		if err := (&controllersvolume.AttachmentReconciler{
+		if err := (&controllersservice.EventRuleReconciler{
 			Client:           mgr.GetClient(),
-			Log:              ctrl.Log.WithName("controllers").WithName("Attachment"),
+			Log:              ctrl.Log.WithName("controllers").WithName("EventRule"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider(),
-			Resource:         pagerduty.Provider().ResourcesMap["pagerduty_volume_attachment"],
-			TypeName:         "pagerduty_volume_attachment",
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_service_event_rule"],
+			TypeName:         "pagerduty_service_event_rule",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Attachment")
+			setupLog.Error(err, "unable to create controller", "controller", "EventRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "service.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Integration",
+	}:
+		if err := (&controllersservice.IntegrationReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Integration"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_service_integration"],
+			TypeName:         "pagerduty_service_integration",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Integration")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "team.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Team",
+	}:
+		if err := (&controllersteam.TeamReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Team"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_team"],
+			TypeName:         "pagerduty_team",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Team")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "team.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Membership",
+	}:
+		if err := (&controllersteam.MembershipReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("Membership"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_team_membership"],
+			TypeName:         "pagerduty_team_membership",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Membership")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "user.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "User",
+	}:
+		if err := (&controllersuser.UserReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("User"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_user"],
+			TypeName:         "pagerduty_user",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "User")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "user.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ContactMethod",
+	}:
+		if err := (&controllersuser.ContactMethodReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("ContactMethod"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_user_contact_method"],
+			TypeName:         "pagerduty_user_contact_method",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ContactMethod")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "user.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "NotificationRule",
+	}:
+		if err := (&controllersuser.NotificationRuleReconciler{
+			Client:           mgr.GetClient(),
+			Log:              ctrl.Log.WithName("controllers").WithName("NotificationRule"),
+			Scheme:           mgr.GetScheme(),
+			Gvk:              gvk,
+			Provider:         pagerduty.Provider().(*tfschema.Provider),
+			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_user_notification_rule"],
+			TypeName:         "pagerduty_user_notification_rule",
+			WatchOnlyDefault: watchOnlyDefault,
+		}).SetupWithManager(ctx, mgr, auditor); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "NotificationRule")
 			return err
 		}
 
@@ -505,129 +618,183 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 func SetupWebhook(mgr manager.Manager, gvk schema.GroupVersionKind) error {
 	switch gvk {
 	case schema.GroupVersionKind{
-		Group:   "dns.pagerduty.kubeform.com",
+		Group:   "addon.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "DomainName",
+		Kind:    "Addon",
 	}:
-		if err := (&dnsv1alpha1.DomainName{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "DomainName")
+		if err := (&addonv1alpha1.Addon{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Addon")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "dns.pagerduty.kubeform.com",
+		Group:   "business.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "DomainRecord",
+		Kind:    "Service",
 	}:
-		if err := (&dnsv1alpha1.DomainRecord{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "DomainRecord")
+		if err := (&businessv1alpha1.Service{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Service")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "firewall.pagerduty.kubeform.com",
+		Group:   "escalation.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Firewall",
+		Kind:    "Policy",
 	}:
-		if err := (&firewallv1alpha1.Firewall{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Firewall")
+		if err := (&escalationv1alpha1.Policy{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Policy")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "firewall.pagerduty.kubeform.com",
+		Group:   "event.pagerduty.kubeform.com",
 		Version: "v1alpha1",
 		Kind:    "Rule",
 	}:
-		if err := (&firewallv1alpha1.Rule{}).SetupWebhookWithManager(mgr); err != nil {
+		if err := (&eventv1alpha1.Rule{}).SetupWebhookWithManager(mgr); err != nil {
 			setupLog.Error(err, "unable to create webhook", "webhook", "Rule")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "instance.pagerduty.kubeform.com",
+		Group:   "extension.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Instance",
+		Kind:    "Extension",
 	}:
-		if err := (&instancev1alpha1.Instance{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Instance")
+		if err := (&extensionv1alpha1.Extension{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Extension")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "kubernetes.pagerduty.kubeform.com",
+		Group:   "extension.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Cluster",
+		Kind:    "Servicenow",
 	}:
-		if err := (&kubernetesv1alpha1.Cluster{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Cluster")
+		if err := (&extensionv1alpha1.Servicenow{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Servicenow")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "kubernetes.pagerduty.kubeform.com",
+		Group:   "maintenance.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "NodePool",
+		Kind:    "Window",
 	}:
-		if err := (&kubernetesv1alpha1.NodePool{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "NodePool")
+		if err := (&maintenancev1alpha1.Window{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Window")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "loadbalancer.pagerduty.kubeform.com",
+		Group:   "response.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Loadbalancer",
+		Kind:    "Play",
 	}:
-		if err := (&loadbalancerv1alpha1.Loadbalancer{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Loadbalancer")
+		if err := (&responsev1alpha1.Play{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Play")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "network.pagerduty.kubeform.com",
+		Group:   "ruleset.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Network",
+		Kind:    "Ruleset",
 	}:
-		if err := (&networkv1alpha1.Network{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Network")
+		if err := (&rulesetv1alpha1.Ruleset{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Ruleset")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "snapshot.pagerduty.kubeform.com",
+		Group:   "ruleset.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Snapshot",
+		Kind:    "Rule",
 	}:
-		if err := (&snapshotv1alpha1.Snapshot{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Snapshot")
+		if err := (&rulesetv1alpha1.Rule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Rule")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "ssh.pagerduty.kubeform.com",
+		Group:   "schedule.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Key",
+		Kind:    "Schedule",
 	}:
-		if err := (&sshv1alpha1.Key{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Key")
+		if err := (&schedulev1alpha1.Schedule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Schedule")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "template.pagerduty.kubeform.com",
+		Group:   "service.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Template",
+		Kind:    "Service",
 	}:
-		if err := (&templatev1alpha1.Template{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Template")
+		if err := (&servicev1alpha1.Service{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Service")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "volume.pagerduty.kubeform.com",
+		Group:   "service.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Volume",
+		Kind:    "Dependency",
 	}:
-		if err := (&volumev1alpha1.Volume{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Volume")
+		if err := (&servicev1alpha1.Dependency{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Dependency")
 			return err
 		}
 	case schema.GroupVersionKind{
-		Group:   "volume.pagerduty.kubeform.com",
+		Group:   "service.pagerduty.kubeform.com",
 		Version: "v1alpha1",
-		Kind:    "Attachment",
+		Kind:    "EventRule",
 	}:
-		if err := (&volumev1alpha1.Attachment{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "Attachment")
+		if err := (&servicev1alpha1.EventRule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "EventRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "service.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Integration",
+	}:
+		if err := (&servicev1alpha1.Integration{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Integration")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "team.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Team",
+	}:
+		if err := (&teamv1alpha1.Team{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Team")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "team.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Membership",
+	}:
+		if err := (&teamv1alpha1.Membership{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Membership")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "user.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "User",
+	}:
+		if err := (&userv1alpha1.User{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "User")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "user.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ContactMethod",
+	}:
+		if err := (&userv1alpha1.ContactMethod{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ContactMethod")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "user.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "NotificationRule",
+	}:
+		if err := (&userv1alpha1.NotificationRule{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "NotificationRule")
 			return err
 		}
 

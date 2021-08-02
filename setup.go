@@ -68,6 +68,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
 
+var _provider = pagerduty.Provider().(*tfschema.Provider)
+
 var runningControllers = struct {
 	sync.RWMutex
 	mp map[schema.GroupVersionKind]bool
@@ -257,8 +259,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Addon"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_addon"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_addon"],
 			TypeName:         "pagerduty_addon",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -275,8 +277,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Service"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_business_service"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_business_service"],
 			TypeName:         "pagerduty_business_service",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -293,8 +295,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Policy"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_escalation_policy"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_escalation_policy"],
 			TypeName:         "pagerduty_escalation_policy",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -311,8 +313,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Rule"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_event_rule"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_event_rule"],
 			TypeName:         "pagerduty_event_rule",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -329,8 +331,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Extension"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_extension"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_extension"],
 			TypeName:         "pagerduty_extension",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -347,8 +349,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Servicenow"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_extension_servicenow"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_extension_servicenow"],
 			TypeName:         "pagerduty_extension_servicenow",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -365,8 +367,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Window"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_maintenance_window"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_maintenance_window"],
 			TypeName:         "pagerduty_maintenance_window",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -383,8 +385,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Play"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_response_play"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_response_play"],
 			TypeName:         "pagerduty_response_play",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -401,8 +403,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Ruleset"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_ruleset"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_ruleset"],
 			TypeName:         "pagerduty_ruleset",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -419,8 +421,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Rule"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_ruleset_rule"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_ruleset_rule"],
 			TypeName:         "pagerduty_ruleset_rule",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -437,8 +439,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Schedule"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_schedule"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_schedule"],
 			TypeName:         "pagerduty_schedule",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -455,8 +457,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Service"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_service"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_service"],
 			TypeName:         "pagerduty_service",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -473,8 +475,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Dependency"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_service_dependency"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_service_dependency"],
 			TypeName:         "pagerduty_service_dependency",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -491,8 +493,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("EventRule"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_service_event_rule"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_service_event_rule"],
 			TypeName:         "pagerduty_service_event_rule",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -509,8 +511,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Integration"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_service_integration"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_service_integration"],
 			TypeName:         "pagerduty_service_integration",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -527,8 +529,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Team"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_team"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_team"],
 			TypeName:         "pagerduty_team",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -545,8 +547,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("Membership"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_team_membership"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_team_membership"],
 			TypeName:         "pagerduty_team_membership",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -563,8 +565,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("User"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_user"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_user"],
 			TypeName:         "pagerduty_user",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -581,8 +583,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("ContactMethod"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_user_contact_method"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_user_contact_method"],
 			TypeName:         "pagerduty_user_contact_method",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {
@@ -599,8 +601,8 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			Log:              ctrl.Log.WithName("controllers").WithName("NotificationRule"),
 			Scheme:           mgr.GetScheme(),
 			Gvk:              gvk,
-			Provider:         pagerduty.Provider().(*tfschema.Provider),
-			Resource:         pagerduty.Provider().(*tfschema.Provider).ResourcesMap["pagerduty_user_notification_rule"],
+			Provider:         _provider,
+			Resource:         _provider.ResourcesMap["pagerduty_user_notification_rule"],
 			TypeName:         "pagerduty_user_notification_rule",
 			WatchOnlyDefault: watchOnlyDefault,
 		}).SetupWithManager(ctx, mgr, auditor); err != nil {

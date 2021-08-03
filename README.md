@@ -3,7 +3,7 @@
 
 # provider-pagerduty-controller
 
-Kubeform controller for [Terraform Pagerduty Provider](https://github.com/pagerduty/terraform-provider-pagerduty)
+Kubeform controller for [Terraform PagerDuty Provider](https://github.com/PagerDuty/terraform-provider-pagerduty)
 
 ## Installation
 

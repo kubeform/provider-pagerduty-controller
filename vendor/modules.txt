@@ -1218,7 +1218,7 @@ kmodules.xyz/resource-metadata/pkg/graph
 # kubeform.dev/apimachinery v0.0.0-20210629153539-7bcd34a30eb5
 ## explicit
 kubeform.dev/apimachinery/api/v1alpha1
-# kubeform.dev/provider-pagerduty-api v0.3.0
+# kubeform.dev/provider-pagerduty-api v0.3.1-0.20210803084338-db0e4ff906ff
 ## explicit
 kubeform.dev/provider-pagerduty-api/api/provider
 kubeform.dev/provider-pagerduty-api/apis/addon

@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/fatih/structs v1.1.0
+	github.com/go-errors/errors v1.0.1
 	github.com/go-logr/logr v0.4.0
 	github.com/gobuffalo/flect v0.2.3
 	github.com/hashicorp/terraform-plugin-sdk v1.7.0
@@ -16,15 +17,15 @@ require (
 	go.bytebuilders.dev/license-verifier v0.9.2
 	go.bytebuilders.dev/license-verifier/kubernetes v0.9.2
 	gomodules.xyz/logs v0.0.3
-	gomodules.xyz/x v0.0.5
+	gomodules.xyz/x v0.0.7
 	k8s.io/api v0.21.1
 	k8s.io/apiextensions-apiserver v0.21.1
 	k8s.io/apimachinery v0.21.1
 	k8s.io/client-go v0.21.1
 	k8s.io/klog/v2 v2.8.0
-	kmodules.xyz/client-go v0.0.0-20210617233340-13d22e91512b
+	kmodules.xyz/client-go v0.0.0-20210822203828-5e9cebbf1dfa
 	kubeform.dev/apimachinery v0.0.0-20210629153539-7bcd34a30eb5
-	kubeform.dev/provider-pagerduty-api v0.3.1-0.20210805060613-04d8f3608915
+	kubeform.dev/provider-pagerduty-api v0.3.1-0.20210824080131-414e0abac77f
 	sigs.k8s.io/cli-utils v0.25.0
 	sigs.k8s.io/controller-runtime v0.9.0
 )

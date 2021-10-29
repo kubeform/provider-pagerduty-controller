@@ -28,7 +28,6 @@ import (
 	"time"
 
 	"github.com/gobuffalo/flect"
-	tfschema "github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	pagerduty "github.com/terraform-providers/terraform-provider-pagerduty/pagerduty"
 	auditlib "go.bytebuilders.dev/audit/lib"
 	arv1 "k8s.io/api/admissionregistration/v1"
@@ -50,6 +49,8 @@ import (
 	rulesetv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/ruleset/v1alpha1"
 	schedulev1alpha1 "kubeform.dev/provider-pagerduty-api/apis/schedule/v1alpha1"
 	servicev1alpha1 "kubeform.dev/provider-pagerduty-api/apis/service/v1alpha1"
+	slackv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/slack/v1alpha1"
+	tagv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/tag/v1alpha1"
 	teamv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/team/v1alpha1"
 	userv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/user/v1alpha1"
 	controllersaddon "kubeform.dev/provider-pagerduty-controller/controllers/addon"
@@ -62,6 +63,8 @@ import (
 	controllersruleset "kubeform.dev/provider-pagerduty-controller/controllers/ruleset"
 	controllersschedule "kubeform.dev/provider-pagerduty-controller/controllers/schedule"
 	controllersservice "kubeform.dev/provider-pagerduty-controller/controllers/service"
+	controllersslack "kubeform.dev/provider-pagerduty-controller/controllers/slack"
+	controllerstag "kubeform.dev/provider-pagerduty-controller/controllers/tag"
 	controllersteam "kubeform.dev/provider-pagerduty-controller/controllers/team"
 	controllersuser "kubeform.dev/provider-pagerduty-controller/controllers/user"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -506,6 +509,57 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			return err
 		}
 	case schema.GroupVersionKind{
+		Group:   "slack.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Connection",
+	}:
+		if err := (&controllersslack.ConnectionReconciler{
+			Client:   mgr.GetClient(),
+			Log:      ctrl.Log.WithName("controllers").WithName("Connection"),
+			Scheme:   mgr.GetScheme(),
+			Gvk:      gvk,
+			Provider: _provider,
+			Resource: _provider.ResourcesMap["pagerduty_slack_connection"],
+			TypeName: "pagerduty_slack_connection",
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Connection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "tag.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Tag",
+	}:
+		if err := (&controllerstag.TagReconciler{
+			Client:   mgr.GetClient(),
+			Log:      ctrl.Log.WithName("controllers").WithName("Tag"),
+			Scheme:   mgr.GetScheme(),
+			Gvk:      gvk,
+			Provider: _provider,
+			Resource: _provider.ResourcesMap["pagerduty_tag"],
+			TypeName: "pagerduty_tag",
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Tag")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "tag.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Assignment",
+	}:
+		if err := (&controllerstag.AssignmentReconciler{
+			Client:   mgr.GetClient(),
+			Log:      ctrl.Log.WithName("controllers").WithName("Assignment"),
+			Scheme:   mgr.GetScheme(),
+			Gvk:      gvk,
+			Provider: _provider,
+			Resource: _provider.ResourcesMap["pagerduty_tag_assignment"],
+			TypeName: "pagerduty_tag_assignment",
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Assignment")
+			return err
+		}
+	case schema.GroupVersionKind{
 		Group:   "team.pagerduty.kubeform.com",
 		Version: "v1alpha1",
 		Kind:    "Team",
@@ -733,6 +787,33 @@ func SetupWebhook(mgr manager.Manager, gvk schema.GroupVersionKind) error {
 	}:
 		if err := (&servicev1alpha1.Integration{}).SetupWebhookWithManager(mgr); err != nil {
 			setupLog.Error(err, "unable to create webhook", "webhook", "Integration")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "slack.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Connection",
+	}:
+		if err := (&slackv1alpha1.Connection{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Connection")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "tag.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Tag",
+	}:
+		if err := (&tagv1alpha1.Tag{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Tag")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "tag.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Assignment",
+	}:
+		if err := (&tagv1alpha1.Assignment{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Assignment")
 			return err
 		}
 	case schema.GroupVersionKind{

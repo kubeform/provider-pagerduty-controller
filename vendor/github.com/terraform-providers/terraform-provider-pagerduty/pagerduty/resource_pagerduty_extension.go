@@ -6,10 +6,10 @@ import (
 	"log"
 	"time"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/structure"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/structure"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/heimweh/go-pagerduty/pagerduty"
 )
 
@@ -56,8 +56,12 @@ func resourcePagerDutyExtension() *schema.Resource {
 			"config": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				ValidateFunc:     validation.ValidateJsonString,
+				ValidateFunc:     validation.StringIsJSON,
 				DiffSuppressFunc: structure.SuppressJsonDiff,
+			},
+			"summary": {
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 		},
 	}
@@ -83,7 +87,7 @@ func buildExtensionStruct(d *schema.ResourceData) *pagerduty.Extension {
 }
 
 func resourcePagerDutyExtensionCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*pagerduty.Client)
+	client, _ := meta.(*Config).Client()
 
 	extension := buildExtensionStruct(d)
 
@@ -100,7 +104,7 @@ func resourcePagerDutyExtensionCreate(d *schema.ResourceData, meta interface{}) 
 }
 
 func resourcePagerDutyExtensionRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*pagerduty.Client)
+	client, _ := meta.(*Config).Client()
 
 	log.Printf("[INFO] Reading PagerDuty extension %s", d.Id())
 
@@ -123,7 +127,7 @@ func resourcePagerDutyExtensionRead(d *schema.ResourceData, meta interface{}) er
 		if err := d.Set("extension_objects", flattenExtensionObjects(extension.ExtensionObjects)); err != nil {
 			log.Printf("[WARN] error setting extension_objects: %s", err)
 		}
-		d.Set("extension_schema", extension.ExtensionSchema)
+		d.Set("extension_schema", extension.ExtensionSchema.ID)
 
 		if err := d.Set("config", flattenExtensionConfig(extension.Config)); err != nil {
 			log.Printf("[WARN] error setting extension config: %s", err)
@@ -134,7 +138,7 @@ func resourcePagerDutyExtensionRead(d *schema.ResourceData, meta interface{}) er
 }
 
 func resourcePagerDutyExtensionUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*pagerduty.Client)
+	client, _ := meta.(*Config).Client()
 
 	extension := buildExtensionStruct(d)
 
@@ -148,7 +152,7 @@ func resourcePagerDutyExtensionUpdate(d *schema.ResourceData, meta interface{}) 
 }
 
 func resourcePagerDutyExtensionDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*pagerduty.Client)
+	client, _ := meta.(*Config).Client()
 
 	log.Printf("[INFO] Deleting PagerDuty extension %s", d.Id())
 
@@ -166,7 +170,7 @@ func resourcePagerDutyExtensionDelete(d *schema.ResourceData, meta interface{}) 
 }
 
 func resourcePagerDutyExtensionImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	client := meta.(*pagerduty.Client)
+	client, _ := meta.(*Config).Client()
 
 	extension, _, err := client.Extensions.Get(d.Id())
 

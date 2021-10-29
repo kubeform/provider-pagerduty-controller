@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/heimweh/go-pagerduty/pagerduty"
 )
 
@@ -100,7 +100,7 @@ func flattenTeam(v *pagerduty.RulesetObject) []interface{} {
 	return []interface{}{team}
 }
 func resourcePagerDutyRulesetCreate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*pagerduty.Client)
+	client, _ := meta.(*Config).Client()
 
 	ruleset := buildRulesetStruct(d)
 
@@ -127,7 +127,7 @@ func resourcePagerDutyRulesetCreate(d *schema.ResourceData, meta interface{}) er
 }
 
 func resourcePagerDutyRulesetRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*pagerduty.Client)
+	client, _ := meta.(*Config).Client()
 
 	log.Printf("[INFO] Reading PagerDuty ruleset: %s", d.Id())
 
@@ -155,7 +155,7 @@ func resourcePagerDutyRulesetRead(d *schema.ResourceData, meta interface{}) erro
 	})
 }
 func resourcePagerDutyRulesetUpdate(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*pagerduty.Client)
+	client, _ := meta.(*Config).Client()
 
 	ruleset := buildRulesetStruct(d)
 
@@ -169,7 +169,7 @@ func resourcePagerDutyRulesetUpdate(d *schema.ResourceData, meta interface{}) er
 }
 
 func resourcePagerDutyRulesetDelete(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*pagerduty.Client)
+	client, _ := meta.(*Config).Client()
 
 	log.Printf("[INFO] Deleting PagerDuty ruleset: %s", d.Id())
 

@@ -154,6 +154,11 @@ func (in *ExtensionSpecResource) DeepCopyInto(out *ExtensionSpecResource) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.Summary != nil {
+		in, out := &in.Summary, &out.Summary
+		*out = new(string)
+		**out = **in
+	}
 	if in.Type != nil {
 		in, out := &in.Type, &out.Type
 		*out = new(string)
@@ -329,6 +334,11 @@ func (in *ServicenowSpecResource) DeepCopyInto(out *ServicenowSpecResource) {
 	}
 	if in.SnowUser != nil {
 		in, out := &in.SnowUser, &out.SnowUser
+		*out = new(string)
+		**out = **in
+	}
+	if in.Summary != nil {
+		in, out := &in.Summary, &out.Summary
 		*out = new(string)
 		**out = **in
 	}

@@ -33,6 +33,7 @@ func GetEncoder() map[string]jsoniter.ValEncoder {
 		jsoniter.MustGetKind(reflect2.TypeOf(ServiceSpecIncidentUrgencyRuleDuringSupportHours{}).Type1()):  ServiceSpecIncidentUrgencyRuleDuringSupportHoursCodec{},
 		jsoniter.MustGetKind(reflect2.TypeOf(ServiceSpecIncidentUrgencyRuleOutsideSupportHours{}).Type1()): ServiceSpecIncidentUrgencyRuleOutsideSupportHoursCodec{},
 		jsoniter.MustGetKind(reflect2.TypeOf(ServiceSpecSupportHours{}).Type1()):                           ServiceSpecSupportHoursCodec{},
+		jsoniter.MustGetKind(reflect2.TypeOf(DependencySpecDependency{}).Type1()):                          DependencySpecDependencyCodec{},
 		jsoniter.MustGetKind(reflect2.TypeOf(EventRuleSpecActions{}).Type1()):                              EventRuleSpecActionsCodec{},
 		jsoniter.MustGetKind(reflect2.TypeOf(EventRuleSpecConditions{}).Type1()):                           EventRuleSpecConditionsCodec{},
 		jsoniter.MustGetKind(reflect2.TypeOf(EventRuleSpecTimeFrame{}).Type1()):                            EventRuleSpecTimeFrameCodec{},
@@ -47,6 +48,7 @@ func GetDecoder() map[string]jsoniter.ValDecoder {
 		jsoniter.MustGetKind(reflect2.TypeOf(ServiceSpecIncidentUrgencyRuleDuringSupportHours{}).Type1()):  ServiceSpecIncidentUrgencyRuleDuringSupportHoursCodec{},
 		jsoniter.MustGetKind(reflect2.TypeOf(ServiceSpecIncidentUrgencyRuleOutsideSupportHours{}).Type1()): ServiceSpecIncidentUrgencyRuleOutsideSupportHoursCodec{},
 		jsoniter.MustGetKind(reflect2.TypeOf(ServiceSpecSupportHours{}).Type1()):                           ServiceSpecSupportHoursCodec{},
+		jsoniter.MustGetKind(reflect2.TypeOf(DependencySpecDependency{}).Type1()):                          DependencySpecDependencyCodec{},
 		jsoniter.MustGetKind(reflect2.TypeOf(EventRuleSpecActions{}).Type1()):                              EventRuleSpecActionsCodec{},
 		jsoniter.MustGetKind(reflect2.TypeOf(EventRuleSpecConditions{}).Type1()):                           EventRuleSpecConditionsCodec{},
 		jsoniter.MustGetKind(reflect2.TypeOf(EventRuleSpecTimeFrame{}).Type1()):                            EventRuleSpecTimeFrameCodec{},
@@ -536,6 +538,85 @@ func (ServiceSpecSupportHoursCodec) Decode(ptr unsafe.Pointer, iter *jsoniter.It
 		}
 	default:
 		iter.ReportError("decode ServiceSpecSupportHours", "unexpected JSON type")
+	}
+}
+
+// +k8s:deepcopy-gen=false
+type DependencySpecDependencyCodec struct {
+}
+
+func (DependencySpecDependencyCodec) IsEmpty(ptr unsafe.Pointer) bool {
+	return (*DependencySpecDependency)(ptr) == nil
+}
+
+func (DependencySpecDependencyCodec) Encode(ptr unsafe.Pointer, stream *jsoniter.Stream) {
+	obj := (*DependencySpecDependency)(ptr)
+	var objs []DependencySpecDependency
+	if obj != nil {
+		objs = []DependencySpecDependency{*obj}
+	}
+
+	jsonit := jsoniter.Config{
+		EscapeHTML:             true,
+		SortMapKeys:            true,
+		ValidateJsonRawMessage: true,
+		TagKey:                 "tf",
+		TypeEncoders:           getEncodersWithout(jsoniter.MustGetKind(reflect2.TypeOf(DependencySpecDependency{}).Type1())),
+	}.Froze()
+
+	byt, _ := jsonit.Marshal(objs)
+
+	stream.Write(byt)
+}
+
+func (DependencySpecDependencyCodec) Decode(ptr unsafe.Pointer, iter *jsoniter.Iterator) {
+	switch iter.WhatIsNext() {
+	case jsoniter.NilValue:
+		iter.Skip()
+		*(*DependencySpecDependency)(ptr) = DependencySpecDependency{}
+		return
+	case jsoniter.ArrayValue:
+		objsByte := iter.SkipAndReturnBytes()
+		if len(objsByte) > 0 {
+			var objs []DependencySpecDependency
+
+			jsonit := jsoniter.Config{
+				EscapeHTML:             true,
+				SortMapKeys:            true,
+				ValidateJsonRawMessage: true,
+				TagKey:                 "tf",
+				TypeDecoders:           getDecodersWithout(jsoniter.MustGetKind(reflect2.TypeOf(DependencySpecDependency{}).Type1())),
+			}.Froze()
+			jsonit.Unmarshal(objsByte, &objs)
+
+			if len(objs) > 0 {
+				*(*DependencySpecDependency)(ptr) = objs[0]
+			} else {
+				*(*DependencySpecDependency)(ptr) = DependencySpecDependency{}
+			}
+		} else {
+			*(*DependencySpecDependency)(ptr) = DependencySpecDependency{}
+		}
+	case jsoniter.ObjectValue:
+		objByte := iter.SkipAndReturnBytes()
+		if len(objByte) > 0 {
+			var obj DependencySpecDependency
+
+			jsonit := jsoniter.Config{
+				EscapeHTML:             true,
+				SortMapKeys:            true,
+				ValidateJsonRawMessage: true,
+				TagKey:                 "tf",
+				TypeDecoders:           getDecodersWithout(jsoniter.MustGetKind(reflect2.TypeOf(DependencySpecDependency{}).Type1())),
+			}.Froze()
+			jsonit.Unmarshal(objByte, &obj)
+
+			*(*DependencySpecDependency)(ptr) = obj
+		} else {
+			*(*DependencySpecDependency)(ptr) = DependencySpecDependency{}
+		}
+	default:
+		iter.ReportError("decode DependencySpecDependency", "unexpected JSON type")
 	}
 }
 

@@ -208,10 +208,8 @@ func (in *DependencySpecResource) DeepCopyInto(out *DependencySpecResource) {
 	*out = *in
 	if in.Dependency != nil {
 		in, out := &in.Dependency, &out.Dependency
-		*out = make([]DependencySpecDependency, len(*in))
-		for i := range *in {
-			(*in)[i].DeepCopyInto(&(*out)[i])
-		}
+		*out = new(DependencySpecDependency)
+		(*in).DeepCopyInto(*out)
 	}
 	return
 }
@@ -1311,7 +1309,7 @@ func (in *ServiceSpecResource) DeepCopyInto(out *ServiceSpecResource) {
 	}
 	if in.AlertGroupingTimeout != nil {
 		in, out := &in.AlertGroupingTimeout, &out.AlertGroupingTimeout
-		*out = new(int64)
+		*out = new(string)
 		**out = **in
 	}
 	if in.AutoResolveTimeout != nil {

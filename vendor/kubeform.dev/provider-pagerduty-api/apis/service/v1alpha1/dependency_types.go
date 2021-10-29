@@ -75,7 +75,7 @@ type DependencySpec struct {
 type DependencySpecResource struct {
 	ID string `json:"id,omitempty" tf:"id,omitempty"`
 
-	Dependency []DependencySpecDependency `json:"dependency" tf:"dependency"`
+	Dependency *DependencySpecDependency `json:"dependency" tf:"dependency"`
 }
 
 type DependencyStatus struct {

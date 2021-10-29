@@ -71,6 +71,8 @@ type ExtensionSpecResource struct {
 	// +optional
 	Name *string `json:"name,omitempty" tf:"name"`
 	// +optional
+	Summary *string `json:"summary,omitempty" tf:"summary"`
+	// +optional
 	Type *string `json:"type,omitempty" tf:"type"`
 }
 

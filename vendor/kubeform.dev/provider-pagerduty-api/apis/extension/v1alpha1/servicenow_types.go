@@ -71,9 +71,11 @@ type ServicenowSpecResource struct {
 	Referer      *string `json:"referer" tf:"referer"`
 	SnowPassword *string `json:"-" sensitive:"true" tf:"snow_password"`
 	SnowUser     *string `json:"snowUser" tf:"snow_user"`
-	SyncOptions  *string `json:"syncOptions" tf:"sync_options"`
-	Target       *string `json:"target" tf:"target"`
-	TaskType     *string `json:"taskType" tf:"task_type"`
+	// +optional
+	Summary     *string `json:"summary,omitempty" tf:"summary"`
+	SyncOptions *string `json:"syncOptions" tf:"sync_options"`
+	Target      *string `json:"target" tf:"target"`
+	TaskType    *string `json:"taskType" tf:"task_type"`
 	// +optional
 	Type *string `json:"type,omitempty" tf:"type"`
 }

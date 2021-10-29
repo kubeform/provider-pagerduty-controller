@@ -235,6 +235,11 @@ func (in *ScheduleSpecResource) DeepCopyInto(out *ScheduleSpecResource) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.Teams != nil {
+		in, out := &in.Teams, &out.Teams
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
 	if in.TimeZone != nil {
 		in, out := &in.TimeZone, &out.TimeZone
 		*out = new(string)

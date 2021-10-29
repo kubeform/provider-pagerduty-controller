@@ -29,6 +29,8 @@ import (
 	rulesetv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/ruleset/v1alpha1"
 	schedulev1alpha1 "kubeform.dev/provider-pagerduty-api/apis/schedule/v1alpha1"
 	servicev1alpha1 "kubeform.dev/provider-pagerduty-api/apis/service/v1alpha1"
+	slackv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/slack/v1alpha1"
+	tagv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/tag/v1alpha1"
 	teamv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/team/v1alpha1"
 	userv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/user/v1alpha1"
 
@@ -53,6 +55,8 @@ var localSchemeBuilder = runtime.SchemeBuilder{
 	rulesetv1alpha1.AddToScheme,
 	schedulev1alpha1.AddToScheme,
 	servicev1alpha1.AddToScheme,
+	slackv1alpha1.AddToScheme,
+	tagv1alpha1.AddToScheme,
 	teamv1alpha1.AddToScheme,
 	userv1alpha1.AddToScheme,
 }

@@ -41,11 +41,6 @@ type NotificationRule struct {
 	Status            NotificationRuleStatus `json:"status,omitempty"`
 }
 
-type NotificationRuleSpecContactMethod struct {
-	ID   *string `json:"ID" tf:"id"`
-	Type *string `json:"type" tf:"type"`
-}
-
 type NotificationRuleSpec struct {
 	State *NotificationRuleSpecResource `json:"state,omitempty" tf:"-"`
 
@@ -63,10 +58,10 @@ type NotificationRuleSpec struct {
 type NotificationRuleSpecResource struct {
 	ID string `json:"id,omitempty" tf:"id,omitempty"`
 
-	ContactMethod       map[string]NotificationRuleSpecContactMethod `json:"contactMethod" tf:"contact_method"`
-	StartDelayInMinutes *int64                                       `json:"startDelayInMinutes" tf:"start_delay_in_minutes"`
-	Urgency             *string                                      `json:"urgency" tf:"urgency"`
-	UserID              *string                                      `json:"userID" tf:"user_id"`
+	ContactMethod       *map[string]string `json:"contactMethod" tf:"contact_method"`
+	StartDelayInMinutes *int64             `json:"startDelayInMinutes" tf:"start_delay_in_minutes"`
+	Urgency             *string            `json:"urgency" tf:"urgency"`
+	UserID              *string            `json:"userID" tf:"user_id"`
 }
 
 type NotificationRuleStatus struct {

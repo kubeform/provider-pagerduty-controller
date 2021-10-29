@@ -31,6 +31,8 @@ import (
 	rulesetv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/ruleset/v1alpha1"
 	schedulev1alpha1 "kubeform.dev/provider-pagerduty-api/apis/schedule/v1alpha1"
 	servicev1alpha1 "kubeform.dev/provider-pagerduty-api/apis/service/v1alpha1"
+	slackv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/slack/v1alpha1"
+	tagv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/tag/v1alpha1"
 	teamv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/team/v1alpha1"
 	userv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/user/v1alpha1"
 	"kubeform.dev/provider-pagerduty-controller/controllers"
@@ -162,6 +164,30 @@ var (
 		}: {
 			JsonIt:       controllers.GetJSONItr(servicev1alpha1.GetEncoder(), servicev1alpha1.GetDecoder()),
 			ResourceType: "pagerduty_service_integration",
+		},
+		{
+			Group:    "slack.pagerduty.kubeform.com",
+			Version:  "v1alpha1",
+			Resource: "connections",
+		}: {
+			JsonIt:       controllers.GetJSONItr(slackv1alpha1.GetEncoder(), slackv1alpha1.GetDecoder()),
+			ResourceType: "pagerduty_slack_connection",
+		},
+		{
+			Group:    "tag.pagerduty.kubeform.com",
+			Version:  "v1alpha1",
+			Resource: "tags",
+		}: {
+			JsonIt:       controllers.GetJSONItr(tagv1alpha1.GetEncoder(), tagv1alpha1.GetDecoder()),
+			ResourceType: "pagerduty_tag",
+		},
+		{
+			Group:    "tag.pagerduty.kubeform.com",
+			Version:  "v1alpha1",
+			Resource: "assignments",
+		}: {
+			JsonIt:       controllers.GetJSONItr(tagv1alpha1.GetEncoder(), tagv1alpha1.GetDecoder()),
+			ResourceType: "pagerduty_tag_assignment",
 		},
 		{
 			Group:    "team.pagerduty.kubeform.com",

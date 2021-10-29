@@ -22,7 +22,7 @@ import (
 	"context"
 
 	"github.com/go-logr/logr"
-	tfschema "github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	tfschema "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	auditlib "go.bytebuilders.dev/audit/lib"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"

@@ -20,6 +20,10 @@ package provider
 
 type PagerdutySpec struct {
 	// +optional
+	ServiceRegion *string `json:"serviceRegion,omitempty" tf:"service_region"`
+	// +optional
 	SkipCredentialsValidation *bool   `json:"skipCredentialsValidation,omitempty" tf:"skip_credentials_validation"`
 	Token                     *string `json:"token" tf:"token"`
+	// +optional
+	UserToken *string `json:"userToken,omitempty" tf:"user_token"`
 }

@@ -88,8 +88,10 @@ type ScheduleSpecResource struct {
 	// +optional
 	Name *string `json:"name,omitempty" tf:"name"`
 	// +optional
-	Overflow *bool   `json:"overflow,omitempty" tf:"overflow"`
-	TimeZone *string `json:"timeZone" tf:"time_zone"`
+	Overflow *bool `json:"overflow,omitempty" tf:"overflow"`
+	// +optional
+	Teams    []string `json:"teams,omitempty" tf:"teams"`
+	TimeZone *string  `json:"timeZone" tf:"time_zone"`
 }
 
 type ScheduleStatus struct {

@@ -133,11 +133,13 @@ type ServiceSpecResource struct {
 	// +optional
 	AlertCreation *string `json:"alertCreation,omitempty" tf:"alert_creation"`
 	// +optional
+	// Deprecated
 	AlertGrouping *string `json:"alertGrouping,omitempty" tf:"alert_grouping"`
 	// +optional
 	AlertGroupingParameters *ServiceSpecAlertGroupingParameters `json:"alertGroupingParameters,omitempty" tf:"alert_grouping_parameters"`
 	// +optional
-	AlertGroupingTimeout *int64 `json:"alertGroupingTimeout,omitempty" tf:"alert_grouping_timeout"`
+	// Deprecated
+	AlertGroupingTimeout *string `json:"alertGroupingTimeout,omitempty" tf:"alert_grouping_timeout"`
 	// +optional
 	AutoResolveTimeout *string `json:"autoResolveTimeout,omitempty" tf:"auto_resolve_timeout"`
 	// +optional

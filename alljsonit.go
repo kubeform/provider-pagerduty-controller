@@ -43,194 +43,192 @@ type Data struct {
 	ResourceType string
 }
 
-var (
-	allJsonIt = map[schema.GroupVersionResource]Data{
-		{
-			Group:    "addon.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "addons",
-		}: {
-			JsonIt:       controllers.GetJSONItr(addonv1alpha1.GetEncoder(), addonv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_addon",
-		},
-		{
-			Group:    "business.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "services",
-		}: {
-			JsonIt:       controllers.GetJSONItr(businessv1alpha1.GetEncoder(), businessv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_business_service",
-		},
-		{
-			Group:    "escalation.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "policies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(escalationv1alpha1.GetEncoder(), escalationv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_escalation_policy",
-		},
-		{
-			Group:    "event.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "rules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(eventv1alpha1.GetEncoder(), eventv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_event_rule",
-		},
-		{
-			Group:    "extension.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "extensions",
-		}: {
-			JsonIt:       controllers.GetJSONItr(extensionv1alpha1.GetEncoder(), extensionv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_extension",
-		},
-		{
-			Group:    "extension.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "servicenows",
-		}: {
-			JsonIt:       controllers.GetJSONItr(extensionv1alpha1.GetEncoder(), extensionv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_extension_servicenow",
-		},
-		{
-			Group:    "maintenance.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "windows",
-		}: {
-			JsonIt:       controllers.GetJSONItr(maintenancev1alpha1.GetEncoder(), maintenancev1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_maintenance_window",
-		},
-		{
-			Group:    "response.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "plays",
-		}: {
-			JsonIt:       controllers.GetJSONItr(responsev1alpha1.GetEncoder(), responsev1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_response_play",
-		},
-		{
-			Group:    "ruleset.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "rulesets",
-		}: {
-			JsonIt:       controllers.GetJSONItr(rulesetv1alpha1.GetEncoder(), rulesetv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_ruleset",
-		},
-		{
-			Group:    "ruleset.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "rules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(rulesetv1alpha1.GetEncoder(), rulesetv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_ruleset_rule",
-		},
-		{
-			Group:    "schedule.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "schedules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(schedulev1alpha1.GetEncoder(), schedulev1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_schedule",
-		},
-		{
-			Group:    "service.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "services",
-		}: {
-			JsonIt:       controllers.GetJSONItr(servicev1alpha1.GetEncoder(), servicev1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_service",
-		},
-		{
-			Group:    "service.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "dependencies",
-		}: {
-			JsonIt:       controllers.GetJSONItr(servicev1alpha1.GetEncoder(), servicev1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_service_dependency",
-		},
-		{
-			Group:    "service.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "eventrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(servicev1alpha1.GetEncoder(), servicev1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_service_event_rule",
-		},
-		{
-			Group:    "service.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "integrations",
-		}: {
-			JsonIt:       controllers.GetJSONItr(servicev1alpha1.GetEncoder(), servicev1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_service_integration",
-		},
-		{
-			Group:    "slack.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "connections",
-		}: {
-			JsonIt:       controllers.GetJSONItr(slackv1alpha1.GetEncoder(), slackv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_slack_connection",
-		},
-		{
-			Group:    "tag.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "tags",
-		}: {
-			JsonIt:       controllers.GetJSONItr(tagv1alpha1.GetEncoder(), tagv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_tag",
-		},
-		{
-			Group:    "tag.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "assignments",
-		}: {
-			JsonIt:       controllers.GetJSONItr(tagv1alpha1.GetEncoder(), tagv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_tag_assignment",
-		},
-		{
-			Group:    "team.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "teams",
-		}: {
-			JsonIt:       controllers.GetJSONItr(teamv1alpha1.GetEncoder(), teamv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_team",
-		},
-		{
-			Group:    "team.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "memberships",
-		}: {
-			JsonIt:       controllers.GetJSONItr(teamv1alpha1.GetEncoder(), teamv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_team_membership",
-		},
-		{
-			Group:    "user.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "users",
-		}: {
-			JsonIt:       controllers.GetJSONItr(userv1alpha1.GetEncoder(), userv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_user",
-		},
-		{
-			Group:    "user.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "contactmethods",
-		}: {
-			JsonIt:       controllers.GetJSONItr(userv1alpha1.GetEncoder(), userv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_user_contact_method",
-		},
-		{
-			Group:    "user.pagerduty.kubeform.com",
-			Version:  "v1alpha1",
-			Resource: "notificationrules",
-		}: {
-			JsonIt:       controllers.GetJSONItr(userv1alpha1.GetEncoder(), userv1alpha1.GetDecoder()),
-			ResourceType: "pagerduty_user_notification_rule",
-		},
-	}
-)
+var allJsonIt = map[schema.GroupVersionResource]Data{
+	{
+		Group:    "addon.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "addons",
+	}: {
+		JsonIt:       controllers.GetJSONItr(addonv1alpha1.GetEncoder(), addonv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_addon",
+	},
+	{
+		Group:    "business.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "services",
+	}: {
+		JsonIt:       controllers.GetJSONItr(businessv1alpha1.GetEncoder(), businessv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_business_service",
+	},
+	{
+		Group:    "escalation.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "policies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(escalationv1alpha1.GetEncoder(), escalationv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_escalation_policy",
+	},
+	{
+		Group:    "event.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "rules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(eventv1alpha1.GetEncoder(), eventv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_event_rule",
+	},
+	{
+		Group:    "extension.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "extensions",
+	}: {
+		JsonIt:       controllers.GetJSONItr(extensionv1alpha1.GetEncoder(), extensionv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_extension",
+	},
+	{
+		Group:    "extension.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "servicenows",
+	}: {
+		JsonIt:       controllers.GetJSONItr(extensionv1alpha1.GetEncoder(), extensionv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_extension_servicenow",
+	},
+	{
+		Group:    "maintenance.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "windows",
+	}: {
+		JsonIt:       controllers.GetJSONItr(maintenancev1alpha1.GetEncoder(), maintenancev1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_maintenance_window",
+	},
+	{
+		Group:    "response.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "plays",
+	}: {
+		JsonIt:       controllers.GetJSONItr(responsev1alpha1.GetEncoder(), responsev1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_response_play",
+	},
+	{
+		Group:    "ruleset.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "rulesets",
+	}: {
+		JsonIt:       controllers.GetJSONItr(rulesetv1alpha1.GetEncoder(), rulesetv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_ruleset",
+	},
+	{
+		Group:    "ruleset.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "rules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(rulesetv1alpha1.GetEncoder(), rulesetv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_ruleset_rule",
+	},
+	{
+		Group:    "schedule.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "schedules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(schedulev1alpha1.GetEncoder(), schedulev1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_schedule",
+	},
+	{
+		Group:    "service.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "services",
+	}: {
+		JsonIt:       controllers.GetJSONItr(servicev1alpha1.GetEncoder(), servicev1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_service",
+	},
+	{
+		Group:    "service.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "dependencies",
+	}: {
+		JsonIt:       controllers.GetJSONItr(servicev1alpha1.GetEncoder(), servicev1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_service_dependency",
+	},
+	{
+		Group:    "service.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "eventrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(servicev1alpha1.GetEncoder(), servicev1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_service_event_rule",
+	},
+	{
+		Group:    "service.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "integrations",
+	}: {
+		JsonIt:       controllers.GetJSONItr(servicev1alpha1.GetEncoder(), servicev1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_service_integration",
+	},
+	{
+		Group:    "slack.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "connections",
+	}: {
+		JsonIt:       controllers.GetJSONItr(slackv1alpha1.GetEncoder(), slackv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_slack_connection",
+	},
+	{
+		Group:    "tag.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "tags",
+	}: {
+		JsonIt:       controllers.GetJSONItr(tagv1alpha1.GetEncoder(), tagv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_tag",
+	},
+	{
+		Group:    "tag.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "assignments",
+	}: {
+		JsonIt:       controllers.GetJSONItr(tagv1alpha1.GetEncoder(), tagv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_tag_assignment",
+	},
+	{
+		Group:    "team.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "teams",
+	}: {
+		JsonIt:       controllers.GetJSONItr(teamv1alpha1.GetEncoder(), teamv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_team",
+	},
+	{
+		Group:    "team.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "memberships",
+	}: {
+		JsonIt:       controllers.GetJSONItr(teamv1alpha1.GetEncoder(), teamv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_team_membership",
+	},
+	{
+		Group:    "user.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "users",
+	}: {
+		JsonIt:       controllers.GetJSONItr(userv1alpha1.GetEncoder(), userv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_user",
+	},
+	{
+		Group:    "user.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "contactmethods",
+	}: {
+		JsonIt:       controllers.GetJSONItr(userv1alpha1.GetEncoder(), userv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_user_contact_method",
+	},
+	{
+		Group:    "user.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "notificationrules",
+	}: {
+		JsonIt:       controllers.GetJSONItr(userv1alpha1.GetEncoder(), userv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_user_notification_rule",
+	},
+}
 
 func getJsonItAndResType(gvr schema.GroupVersionResource) Data {
 	return allJsonIt[gvr]

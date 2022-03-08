@@ -33,6 +33,7 @@ import (
 	tagv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/tag/v1alpha1"
 	teamv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/team/v1alpha1"
 	userv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/user/v1alpha1"
+	webhookv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/webhook/v1alpha1"
 
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
@@ -59,6 +60,7 @@ var localSchemeBuilder = runtime.SchemeBuilder{
 	tagv1alpha1.AddToScheme,
 	teamv1alpha1.AddToScheme,
 	userv1alpha1.AddToScheme,
+	webhookv1alpha1.AddToScheme,
 }
 
 // AddToScheme adds all types of this clientset into the given scheme. This allows composition

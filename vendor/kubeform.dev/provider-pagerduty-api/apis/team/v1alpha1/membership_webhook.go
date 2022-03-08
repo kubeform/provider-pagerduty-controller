@@ -89,7 +89,7 @@ func (r *Membership) ValidateUpdate(old runtime.Object) error {
 		return err
 	}
 
-	for key := range membershipForceNewList {
+	for key, _ := range membershipForceNewList {
 		keySplit := strings.Split(key, "/*")
 		length := len(keySplit)
 		checkIfAnyDif := false

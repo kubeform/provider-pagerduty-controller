@@ -89,7 +89,7 @@ func (r *Servicenow) ValidateUpdate(old runtime.Object) error {
 		return err
 	}
 
-	for key := range servicenowForceNewList {
+	for key, _ := range servicenowForceNewList {
 		keySplit := strings.Split(key, "/*")
 		length := len(keySplit)
 		checkIfAnyDif := false

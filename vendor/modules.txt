@@ -258,7 +258,7 @@ github.com/hashicorp/go-cty/cty/set
 # github.com/hashicorp/go-getter v1.5.3
 github.com/hashicorp/go-getter
 github.com/hashicorp/go-getter/helper/url
-# github.com/hashicorp/go-hclog v0.15.0
+# github.com/hashicorp/go-hclog v0.16.1
 github.com/hashicorp/go-hclog
 # github.com/hashicorp/go-immutable-radix v1.0.0
 github.com/hashicorp/go-immutable-radix
@@ -273,7 +273,7 @@ github.com/hashicorp/go-retryablehttp
 github.com/hashicorp/go-rootcerts
 # github.com/hashicorp/go-safetemp v1.0.0
 github.com/hashicorp/go-safetemp
-# github.com/hashicorp/go-uuid v1.0.1
+# github.com/hashicorp/go-uuid v1.0.2
 ## explicit
 github.com/hashicorp/go-uuid
 # github.com/hashicorp/go-version v1.3.0
@@ -281,6 +281,21 @@ github.com/hashicorp/go-version
 # github.com/hashicorp/golang-lru v0.5.4
 github.com/hashicorp/golang-lru
 github.com/hashicorp/golang-lru/simplelru
+# github.com/hashicorp/hc-install v0.3.1
+github.com/hashicorp/hc-install
+github.com/hashicorp/hc-install/checkpoint
+github.com/hashicorp/hc-install/errors
+github.com/hashicorp/hc-install/fs
+github.com/hashicorp/hc-install/internal/build
+github.com/hashicorp/hc-install/internal/httpclient
+github.com/hashicorp/hc-install/internal/pubkey
+github.com/hashicorp/hc-install/internal/releasesjson
+github.com/hashicorp/hc-install/internal/src
+github.com/hashicorp/hc-install/internal/validators
+github.com/hashicorp/hc-install/internal/version
+github.com/hashicorp/hc-install/product
+github.com/hashicorp/hc-install/releases
+github.com/hashicorp/hc-install/src
 # github.com/hashicorp/hcl v1.0.0
 ## explicit
 github.com/hashicorp/hcl/hcl/ast
@@ -308,26 +323,29 @@ github.com/hashicorp/hcl/v2/json
 github.com/hashicorp/logutils
 # github.com/hashicorp/serf v0.9.5
 github.com/hashicorp/serf/coordinate
-# github.com/hashicorp/terraform-exec v0.14.0
+# github.com/hashicorp/terraform-exec v0.15.0
 github.com/hashicorp/terraform-exec/internal/version
 github.com/hashicorp/terraform-exec/tfexec
-github.com/hashicorp/terraform-exec/tfinstall
-# github.com/hashicorp/terraform-json v0.12.0
+# github.com/hashicorp/terraform-json v0.13.0
 github.com/hashicorp/terraform-json
-# github.com/hashicorp/terraform-plugin-go v0.3.0
+# github.com/hashicorp/terraform-plugin-go v0.5.0
 ## explicit
 github.com/hashicorp/terraform-plugin-go/tfprotov5
 github.com/hashicorp/terraform-plugin-go/tfprotov5/internal/fromproto
 github.com/hashicorp/terraform-plugin-go/tfprotov5/internal/tfplugin5
 github.com/hashicorp/terraform-plugin-go/tfprotov5/internal/toproto
-github.com/hashicorp/terraform-plugin-go/tfprotov5/server
+github.com/hashicorp/terraform-plugin-go/tfprotov5/tf5server
 github.com/hashicorp/terraform-plugin-go/tfprotov6
 github.com/hashicorp/terraform-plugin-go/tfprotov6/internal/fromproto
 github.com/hashicorp/terraform-plugin-go/tfprotov6/internal/tfplugin6
 github.com/hashicorp/terraform-plugin-go/tfprotov6/internal/toproto
-github.com/hashicorp/terraform-plugin-go/tfprotov6/server
+github.com/hashicorp/terraform-plugin-go/tfprotov6/tf6server
 github.com/hashicorp/terraform-plugin-go/tftypes
-# github.com/hashicorp/terraform-plugin-sdk/v2 v2.7.1
+# github.com/hashicorp/terraform-plugin-log v0.2.0
+github.com/hashicorp/terraform-plugin-log/internal/logging
+github.com/hashicorp/terraform-plugin-log/tflog
+github.com/hashicorp/terraform-plugin-log/tfsdklog
+# github.com/hashicorp/terraform-plugin-sdk/v2 v2.10.1
 ## explicit
 github.com/hashicorp/terraform-plugin-sdk/v2/diag
 github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging
@@ -346,13 +364,15 @@ github.com/hashicorp/terraform-plugin-sdk/v2/internal/tfdiags
 github.com/hashicorp/terraform-plugin-sdk/v2/meta
 github.com/hashicorp/terraform-plugin-sdk/v2/plugin
 github.com/hashicorp/terraform-plugin-sdk/v2/terraform
+# github.com/hashicorp/terraform-registry-address v0.0.0-20210412075316-9b2996cce896
+github.com/hashicorp/terraform-registry-address
 # github.com/hashicorp/terraform-svchost v0.0.0-20200729002733-f050f53b9734
 github.com/hashicorp/terraform-svchost
 github.com/hashicorp/terraform-svchost/auth
 github.com/hashicorp/terraform-svchost/disco
 # github.com/hashicorp/yamux v0.0.0-20181012175058-2f1d1f20f75d
 github.com/hashicorp/yamux
-# github.com/heimweh/go-pagerduty v0.0.0-20210930203304-530eff2acdc6
+# github.com/heimweh/go-pagerduty v0.0.0-20211210233744-b65de43109c1
 github.com/heimweh/go-pagerduty/pagerduty
 # github.com/huandu/xstrings v1.3.2
 github.com/huandu/xstrings
@@ -410,7 +430,7 @@ github.com/mitchellh/colorstring
 github.com/mitchellh/copystructure
 # github.com/mitchellh/go-homedir v1.1.0
 github.com/mitchellh/go-homedir
-# github.com/mitchellh/go-testing-interface v1.0.4
+# github.com/mitchellh/go-testing-interface v1.14.1
 github.com/mitchellh/go-testing-interface
 # github.com/mitchellh/go-wordwrap v1.0.0
 github.com/mitchellh/go-wordwrap
@@ -479,7 +499,7 @@ github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/regions
 github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tag/v20180813
 # github.com/tencentyun/cos-go-sdk-v5 v0.7.29
 github.com/tencentyun/cos-go-sdk-v5
-# github.com/terraform-providers/terraform-provider-pagerduty v0.0.0-00010101000000-000000000000 => github.com/PagerDuty/terraform-provider-pagerduty v1.11.1-0.20211025223820-5b21090fbd05
+# github.com/terraform-providers/terraform-provider-pagerduty v0.0.0-00010101000000-000000000000 => github.com/PagerDuty/terraform-provider-pagerduty v1.11.1-0.20220210232135-1fc5d88a276e
 ## explicit
 github.com/terraform-providers/terraform-provider-pagerduty/pagerduty
 # github.com/tombuildsstuff/giovanni v0.15.1
@@ -602,12 +622,13 @@ go.uber.org/zap/internal/bufferpool
 go.uber.org/zap/internal/color
 go.uber.org/zap/internal/exit
 go.uber.org/zap/zapcore
-# golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
+# golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blowfish
 golang.org/x/crypto/cast5
 golang.org/x/crypto/chacha20
 golang.org/x/crypto/curve25519
+golang.org/x/crypto/curve25519/internal/field
 golang.org/x/crypto/ed25519
 golang.org/x/crypto/ed25519/internal/edwards25519
 golang.org/x/crypto/internal/subtle
@@ -1345,7 +1366,7 @@ kmodules.xyz/resource-metrics/api
 ## explicit
 kubeform.dev/apimachinery/api/v1alpha1
 kubeform.dev/apimachinery/pkg/util
-# kubeform.dev/provider-pagerduty-api v0.4.1-0.20220215062850-31b93afdc0d1
+# kubeform.dev/provider-pagerduty-api v0.4.1-0.20220308120133-6f516463d0ca
 ## explicit
 kubeform.dev/provider-pagerduty-api/api/provider
 kubeform.dev/provider-pagerduty-api/apis/addon
@@ -1376,6 +1397,8 @@ kubeform.dev/provider-pagerduty-api/apis/team
 kubeform.dev/provider-pagerduty-api/apis/team/v1alpha1
 kubeform.dev/provider-pagerduty-api/apis/user
 kubeform.dev/provider-pagerduty-api/apis/user/v1alpha1
+kubeform.dev/provider-pagerduty-api/apis/webhook
+kubeform.dev/provider-pagerduty-api/apis/webhook/v1alpha1
 kubeform.dev/provider-pagerduty-api/client/clientset/versioned/scheme
 # kubeform.dev/terraform-backend-sdk v0.0.0-20210922115523-21574335f0db
 ## explicit
@@ -1495,7 +1518,7 @@ sigs.k8s.io/structured-merge-diff/v4/value
 # sigs.k8s.io/yaml v1.2.0
 sigs.k8s.io/yaml
 # github.com/hashicorp/terraform-plugin-sdk => github.com/kubeform/terraform-plugin-sdk v1.17.3-0.20210525113044-1cabe1160aa8
-# github.com/terraform-providers/terraform-provider-pagerduty => github.com/PagerDuty/terraform-provider-pagerduty v1.11.1-0.20211025223820-5b21090fbd05
+# github.com/terraform-providers/terraform-provider-pagerduty => github.com/PagerDuty/terraform-provider-pagerduty v1.11.1-0.20220210232135-1fc5d88a276e
 # github.com/json-iterator/go => github.com/gomodules/json-iterator v1.1.12-0.20210506053207-2a3ea71074bc
 # bitbucket.org/ww/goautoneg => gomodules.xyz/goautoneg v0.0.0-20120707110453-a547fc61f48d
 # cloud.google.com/go => cloud.google.com/go v0.54.0

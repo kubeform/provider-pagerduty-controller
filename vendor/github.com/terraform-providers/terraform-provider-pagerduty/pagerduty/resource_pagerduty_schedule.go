@@ -28,6 +28,10 @@ func resourcePagerDutySchedule() *schema.Resource {
 					if t == "daily_restriction" && diff.Get(fmt.Sprintf("layer.%d.restriction.%d.start_day_of_week", li, ri)).(int) != 0 {
 						return fmt.Errorf("start_day_of_week must only be set for a weekly_restriction schedule restriction type")
 					}
+					ds := diff.Get(fmt.Sprintf("layer.%d.restriction.%d.duration_seconds", li, ri)).(int)
+					if t == "daily_restriction" && ds >= 3600*24 {
+						return fmt.Errorf("duration_seconds for a daily_restriction schedule restriction type must be shorter than a day")
+					}
 				}
 			}
 			return nil
@@ -136,8 +140,9 @@ func resourcePagerDutySchedule() *schema.Resource {
 									},
 
 									"duration_seconds": {
-										Type:     schema.TypeInt,
-										Required: true,
+										Type:         schema.TypeInt,
+										Required:     true,
+										ValidateFunc: validation.IntBetween(1, 7*24*3600-1),
 									},
 								},
 							},
@@ -180,7 +185,10 @@ func buildScheduleStruct(d *schema.ResourceData) (*pagerduty.Schedule, error) {
 }
 
 func resourcePagerDutyScheduleCreate(d *schema.ResourceData, meta interface{}) error {
-	client, _ := meta.(*Config).Client()
+	client, err := meta.(*Config).Client()
+	if err != nil {
+		return err
+	}
 
 	schedule, err := buildScheduleStruct(d)
 	if err != nil {
@@ -206,7 +214,10 @@ func resourcePagerDutyScheduleCreate(d *schema.ResourceData, meta interface{}) e
 }
 
 func resourcePagerDutyScheduleRead(d *schema.ResourceData, meta interface{}) error {
-	client, _ := meta.(*Config).Client()
+	client, err := meta.(*Config).Client()
+	if err != nil {
+		return err
+	}
 
 	log.Printf("[INFO] Reading PagerDuty schedule: %s", d.Id())
 
@@ -244,7 +255,10 @@ func resourcePagerDutyScheduleRead(d *schema.ResourceData, meta interface{}) err
 }
 
 func resourcePagerDutyScheduleUpdate(d *schema.ResourceData, meta interface{}) error {
-	client, _ := meta.(*Config).Client()
+	client, err := meta.(*Config).Client()
+	if err != nil {
+		return err
+	}
 
 	schedule, err := buildScheduleStruct(d)
 	if err != nil {
@@ -313,7 +327,10 @@ func resourcePagerDutyScheduleUpdate(d *schema.ResourceData, meta interface{}) e
 }
 
 func resourcePagerDutyScheduleDelete(d *schema.ResourceData, meta interface{}) error {
-	client, _ := meta.(*Config).Client()
+	client, err := meta.(*Config).Client()
+	if err != nil {
+		return err
+	}
 
 	log.Printf("[INFO] Deleting PagerDuty schedule: %s", d.Id())
 

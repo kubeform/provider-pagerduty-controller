@@ -19,18 +19,25 @@ func dataSourcePagerDutyBusinessService() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"type": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 		},
 	}
 }
 
 func dataSourcePagerDutyBusinessServiceRead(d *schema.ResourceData, meta interface{}) error {
-	client, _ := meta.(*Config).Client()
+	client, err := meta.(*Config).Client()
+	if err != nil {
+		return err
+	}
 
 	log.Printf("[INFO] Reading PagerDuty business service")
 
 	searchName := d.Get("name").(string)
 
-	return resource.Retry(2*time.Minute, func() *resource.RetryError {
+	return resource.Retry(5*time.Minute, func() *resource.RetryError {
 		resp, _, err := client.BusinessServices.List()
 		if err != nil {
 			if isErrCode(err, 429) {
@@ -60,6 +67,7 @@ func dataSourcePagerDutyBusinessServiceRead(d *schema.ResourceData, meta interfa
 
 		d.SetId(found.ID)
 		d.Set("name", found.Name)
+		d.Set("type", found.Type)
 
 		return nil
 	})

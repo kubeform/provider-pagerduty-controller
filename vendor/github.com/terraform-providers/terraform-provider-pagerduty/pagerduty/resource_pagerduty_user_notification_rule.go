@@ -71,35 +71,18 @@ func buildUserNotificationRuleStruct(d *schema.ResourceData) (*pagerduty.Notific
 	return notificationRule, nil
 }
 
-func resourcePagerDutyUserNotificationRuleCreate(d *schema.ResourceData, meta interface{}) error {
-	client, _ := meta.(*Config).Client()
-
-	userID := d.Get("user_id").(string)
-
-	notificationRule, err := buildUserNotificationRuleStruct(d)
+func fetchPagerDutyUserNotificationRule(d *schema.ResourceData, meta interface{}, errCallback func(error, *schema.ResourceData) error) error {
+	client, err := meta.(*Config).Client()
 	if err != nil {
 		return err
 	}
-
-	resp, _, err := client.Users.CreateNotificationRule(userID, notificationRule)
-	if err != nil {
-		return err
-	}
-
-	d.SetId(resp.ID)
-
-	return resourcePagerDutyUserNotificationRuleRead(d, meta)
-}
-
-func resourcePagerDutyUserNotificationRuleRead(d *schema.ResourceData, meta interface{}) error {
-	client, _ := meta.(*Config).Client()
 
 	userID := d.Get("user_id").(string)
 
 	return resource.Retry(2*time.Minute, func() *resource.RetryError {
 		resp, _, err := client.Users.GetNotificationRule(userID, d.Id())
 		if err != nil {
-			errResp := handleNotFoundError(err, d)
+			errResp := errCallback(err, d)
 			if errResp != nil {
 				time.Sleep(2 * time.Second)
 				return resource.RetryableError(errResp)
@@ -116,8 +99,38 @@ func resourcePagerDutyUserNotificationRuleRead(d *schema.ResourceData, meta inte
 	})
 }
 
+func resourcePagerDutyUserNotificationRuleCreate(d *schema.ResourceData, meta interface{}) error {
+	client, err := meta.(*Config).Client()
+	if err != nil {
+		return err
+	}
+
+	userID := d.Get("user_id").(string)
+
+	notificationRule, err := buildUserNotificationRuleStruct(d)
+	if err != nil {
+		return err
+	}
+
+	resp, _, err := client.Users.CreateNotificationRule(userID, notificationRule)
+	if err != nil {
+		return err
+	}
+
+	d.SetId(resp.ID)
+
+	return fetchPagerDutyUserNotificationRule(d, meta, genError)
+}
+
+func resourcePagerDutyUserNotificationRuleRead(d *schema.ResourceData, meta interface{}) error {
+	return fetchPagerDutyUserNotificationRule(d, meta, handleNotFoundError)
+}
+
 func resourcePagerDutyUserNotificationRuleUpdate(d *schema.ResourceData, meta interface{}) error {
-	client, _ := meta.(*Config).Client()
+	client, err := meta.(*Config).Client()
+	if err != nil {
+		return err
+	}
 
 	notificationRule, err := buildUserNotificationRuleStruct(d)
 	if err != nil {
@@ -136,7 +149,10 @@ func resourcePagerDutyUserNotificationRuleUpdate(d *schema.ResourceData, meta in
 }
 
 func resourcePagerDutyUserNotificationRuleDelete(d *schema.ResourceData, meta interface{}) error {
-	client, _ := meta.(*Config).Client()
+	client, err := meta.(*Config).Client()
+	if err != nil {
+		return err
+	}
 
 	log.Printf("[INFO] Deleting PagerDuty user notification rule %s", d.Id())
 
@@ -152,7 +168,10 @@ func resourcePagerDutyUserNotificationRuleDelete(d *schema.ResourceData, meta in
 }
 
 func resourcePagerDutyUserNotificationRuleImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
-	client, _ := meta.(*Config).Client()
+	client, err := meta.(*Config).Client()
+	if err != nil {
+		return []*schema.ResourceData{}, err
+	}
 
 	ids := strings.Split(d.Id(), ":")
 
@@ -161,7 +180,7 @@ func resourcePagerDutyUserNotificationRuleImport(d *schema.ResourceData, meta in
 	}
 	uid, id := ids[0], ids[1]
 
-	_, _, err := client.Users.GetNotificationRule(uid, id)
+	_, _, err = client.Users.GetNotificationRule(uid, id)
 	if err != nil {
 		return []*schema.ResourceData{}, err
 	}

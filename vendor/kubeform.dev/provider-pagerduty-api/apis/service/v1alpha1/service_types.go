@@ -160,6 +160,8 @@ type ServiceSpecResource struct {
 	Status *string `json:"status,omitempty" tf:"status"`
 	// +optional
 	SupportHours *ServiceSpecSupportHours `json:"supportHours,omitempty" tf:"support_hours"`
+	// +optional
+	Type *string `json:"type,omitempty" tf:"type"`
 }
 
 type ServiceStatus struct {

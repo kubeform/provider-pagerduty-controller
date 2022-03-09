@@ -91,7 +91,7 @@ func (r *Dependency) ValidateUpdate(old runtime.Object) error {
 		return err
 	}
 
-	for key := range dependencyForceNewList {
+	for key, _ := range dependencyForceNewList {
 		keySplit := strings.Split(key, "/*")
 		length := len(keySplit)
 		checkIfAnyDif := false

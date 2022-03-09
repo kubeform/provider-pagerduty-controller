@@ -35,6 +35,7 @@ import (
 	tagv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/tag/v1alpha1"
 	teamv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/team/v1alpha1"
 	userv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/user/v1alpha1"
+	webhookv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/webhook/v1alpha1"
 	"kubeform.dev/provider-pagerduty-controller/controllers"
 )
 
@@ -59,6 +60,14 @@ var allJsonIt = map[schema.GroupVersionResource]Data{
 	}: {
 		JsonIt:       controllers.GetJSONItr(businessv1alpha1.GetEncoder(), businessv1alpha1.GetDecoder()),
 		ResourceType: "pagerduty_business_service",
+	},
+	{
+		Group:    "business.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "servicesubscribers",
+	}: {
+		JsonIt:       controllers.GetJSONItr(businessv1alpha1.GetEncoder(), businessv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_business_service_subscriber",
 	},
 	{
 		Group:    "escalation.pagerduty.kubeform.com",
@@ -227,6 +236,14 @@ var allJsonIt = map[schema.GroupVersionResource]Data{
 	}: {
 		JsonIt:       controllers.GetJSONItr(userv1alpha1.GetEncoder(), userv1alpha1.GetDecoder()),
 		ResourceType: "pagerduty_user_notification_rule",
+	},
+	{
+		Group:    "webhook.pagerduty.kubeform.com",
+		Version:  "v1alpha1",
+		Resource: "subscriptions",
+	}: {
+		JsonIt:       controllers.GetJSONItr(webhookv1alpha1.GetEncoder(), webhookv1alpha1.GetDecoder()),
+		ResourceType: "pagerduty_webhook_subscription",
 	},
 }
 

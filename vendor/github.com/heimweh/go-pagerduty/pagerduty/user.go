@@ -230,8 +230,10 @@ func (s *UserService) Get(id string, o *GetUserOptions) (*User, *Response, error
 	u := fmt.Sprintf("/users/%s", id)
 	v := new(UserPayload)
 
-	if err := cacheGetUser(id, v); err == nil {
-		return v.User, nil, nil
+	cv := new(User)
+	if err := cacheGetUser(id, cv); err == nil {
+		log.Printf("Got user %q from cache", id)
+		return cv, nil, nil
 	}
 
 	resp, err := s.client.newRequestDo("GET", u, o, nil, v)
@@ -310,8 +312,9 @@ func (s *UserService) GetContactMethod(userID string, contactMethodID string) (*
 	u := fmt.Sprintf("/users/%s/contact_methods/%s", userID, contactMethodID)
 	v := new(ContactMethodPayload)
 
-	if err := cacheGetContactMethod(contactMethodID, v); err == nil {
-		return v.ContactMethod, nil, nil
+	cv := new(ContactMethod)
+	if err := cacheGetContactMethod(contactMethodID, cv); err == nil {
+		return cv, nil, nil
 	}
 
 	resp, err := s.client.newRequestDo("GET", u, nil, nil, &v)
@@ -375,8 +378,9 @@ func (s *UserService) GetNotificationRule(userID string, ruleID string) (*Notifi
 	u := fmt.Sprintf("/users/%s/notification_rules/%s", userID, ruleID)
 	v := new(NotificationRulePayload)
 
-	if err := cacheGetNotificationRule(ruleID, v); err == nil {
-		return v.NotificationRule, nil, nil
+	cv := new(NotificationRule)
+	if err := cacheGetNotificationRule(ruleID, cv); err == nil {
+		return cv, nil, nil
 	}
 
 	resp, err := s.client.newRequestDo("GET", u, nil, nil, &v)

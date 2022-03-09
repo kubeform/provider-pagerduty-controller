@@ -1369,6 +1369,11 @@ func (in *ServiceSpecResource) DeepCopyInto(out *ServiceSpecResource) {
 		*out = new(ServiceSpecSupportHours)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.Type != nil {
+		in, out := &in.Type, &out.Type
+		*out = new(string)
+		**out = **in
+	}
 	return
 }
 

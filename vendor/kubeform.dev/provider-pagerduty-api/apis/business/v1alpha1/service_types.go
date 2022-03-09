@@ -72,6 +72,7 @@ type ServiceSpecResource struct {
 	// +optional
 	Team *string `json:"team,omitempty" tf:"team"`
 	// +optional
+	// Deprecated
 	Type *string `json:"type,omitempty" tf:"type"`
 }
 

@@ -20,6 +20,8 @@ package provider
 
 type PagerdutySpec struct {
 	// +optional
+	ApiURLOverride *string `json:"apiURLOverride,omitempty" tf:"api_url_override"`
+	// +optional
 	ServiceRegion *string `json:"serviceRegion,omitempty" tf:"service_region"`
 	// +optional
 	SkipCredentialsValidation *bool   `json:"skipCredentialsValidation,omitempty" tf:"skip_credentials_validation"`

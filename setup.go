@@ -53,6 +53,7 @@ import (
 	tagv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/tag/v1alpha1"
 	teamv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/team/v1alpha1"
 	userv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/user/v1alpha1"
+	webhookv1alpha1 "kubeform.dev/provider-pagerduty-api/apis/webhook/v1alpha1"
 	controllersaddon "kubeform.dev/provider-pagerduty-controller/controllers/addon"
 	controllersbusiness "kubeform.dev/provider-pagerduty-controller/controllers/business"
 	controllersescalation "kubeform.dev/provider-pagerduty-controller/controllers/escalation"
@@ -67,6 +68,7 @@ import (
 	controllerstag "kubeform.dev/provider-pagerduty-controller/controllers/tag"
 	controllersteam "kubeform.dev/provider-pagerduty-controller/controllers/team"
 	controllersuser "kubeform.dev/provider-pagerduty-controller/controllers/user"
+	controllerswebhook "kubeform.dev/provider-pagerduty-controller/controllers/webhook"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
@@ -285,6 +287,23 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			TypeName: "pagerduty_business_service",
 		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
 			setupLog.Error(err, "unable to create controller", "controller", "Service")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "business.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ServiceSubscriber",
+	}:
+		if err := (&controllersbusiness.ServiceSubscriberReconciler{
+			Client:   mgr.GetClient(),
+			Log:      ctrl.Log.WithName("controllers").WithName("ServiceSubscriber"),
+			Scheme:   mgr.GetScheme(),
+			Gvk:      gvk,
+			Provider: _provider,
+			Resource: _provider.ResourcesMap["pagerduty_business_service_subscriber"],
+			TypeName: "pagerduty_business_service_subscriber",
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "ServiceSubscriber")
 			return err
 		}
 	case schema.GroupVersionKind{
@@ -644,6 +663,23 @@ func SetupManager(ctx context.Context, mgr manager.Manager, gvk schema.GroupVers
 			setupLog.Error(err, "unable to create controller", "controller", "NotificationRule")
 			return err
 		}
+	case schema.GroupVersionKind{
+		Group:   "webhook.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Subscription",
+	}:
+		if err := (&controllerswebhook.SubscriptionReconciler{
+			Client:   mgr.GetClient(),
+			Log:      ctrl.Log.WithName("controllers").WithName("Subscription"),
+			Scheme:   mgr.GetScheme(),
+			Gvk:      gvk,
+			Provider: _provider,
+			Resource: _provider.ResourcesMap["pagerduty_webhook_subscription"],
+			TypeName: "pagerduty_webhook_subscription",
+		}).SetupWithManager(ctx, mgr, auditor, restrictToNamespace); err != nil {
+			setupLog.Error(err, "unable to create controller", "controller", "Subscription")
+			return err
+		}
 
 	default:
 		return fmt.Errorf("Invalid CRD")
@@ -670,6 +706,15 @@ func SetupWebhook(mgr manager.Manager, gvk schema.GroupVersionKind) error {
 	}:
 		if err := (&businessv1alpha1.Service{}).SetupWebhookWithManager(mgr); err != nil {
 			setupLog.Error(err, "unable to create webhook", "webhook", "Service")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "business.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "ServiceSubscriber",
+	}:
+		if err := (&businessv1alpha1.ServiceSubscriber{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "ServiceSubscriber")
 			return err
 		}
 	case schema.GroupVersionKind{
@@ -859,6 +904,15 @@ func SetupWebhook(mgr manager.Manager, gvk schema.GroupVersionKind) error {
 	}:
 		if err := (&userv1alpha1.NotificationRule{}).SetupWebhookWithManager(mgr); err != nil {
 			setupLog.Error(err, "unable to create webhook", "webhook", "NotificationRule")
+			return err
+		}
+	case schema.GroupVersionKind{
+		Group:   "webhook.pagerduty.kubeform.com",
+		Version: "v1alpha1",
+		Kind:    "Subscription",
+	}:
+		if err := (&webhookv1alpha1.Subscription{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "Subscription")
 			return err
 		}
 

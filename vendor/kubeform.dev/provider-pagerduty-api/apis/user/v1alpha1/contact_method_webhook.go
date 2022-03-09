@@ -86,7 +86,7 @@ func (r *ContactMethod) ValidateUpdate(old runtime.Object) error {
 		return err
 	}
 
-	for key := range contactmethodForceNewList {
+	for key, _ := range contactmethodForceNewList {
 		keySplit := strings.Split(key, "/*")
 		length := len(keySplit)
 		checkIfAnyDif := false

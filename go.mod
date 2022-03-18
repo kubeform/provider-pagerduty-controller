@@ -12,7 +12,8 @@ require (
 	github.com/hashicorp/terraform-plugin-go v0.5.0
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.10.1
 	github.com/imdario/mergo v0.3.12
-	github.com/json-iterator/go v1.1.11
+	github.com/json-iterator/go v1.1.12
+	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.1.3
 	github.com/terraform-providers/terraform-provider-pagerduty v0.0.0-00010101000000-000000000000
